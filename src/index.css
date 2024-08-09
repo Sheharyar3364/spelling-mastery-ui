@@ -1,0 +1,802 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  font-size: 16px;
+  font-family: Montserrat, "Open Sans", sans-serif;
+}
+
+/* Base styles for the loading screen */
+.welcome {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Optional background image */
+}
+
+.welcome h1 {
+  color: #7c2d12;
+  /* Optional text animation */
+  animation: bounce 1s infinite;
+}
+
+.lds-facebook,
+.lds-facebook div {
+  box-sizing: border-box;
+}
+.lds-facebook {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-facebook div {
+  position: absolute;
+  left: 8px;
+  width: 16px;
+  background: currentColor;
+  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+.lds-facebook div:nth-child(1) {
+  left: 8px;
+  animation-delay: -0.24s;
+}
+.lds-facebook div:nth-child(2) {
+  left: 32px;
+  animation-delay: -0.12s;
+}
+.lds-facebook div:nth-child(3) {
+  left: 56px;
+  animation-delay: 0s;
+}
+@keyframes lds-facebook {
+  0% {
+    top: 8px;
+    height: 64px;
+  }
+  50%, 100% {
+    top: 24px;
+    height: 32px;
+  }
+}
+
+/* HOME COMPONENET */
+.home-container {
+  height: calc(90vh - 50px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* HINTS */
+.hintList {
+  position: absolute;
+  /* background-color: #e6e6e6; */
+  top: 30px;
+  left: 25px;
+  transform: translate(-50, -50);
+  z-index: 2;
+  width: 100%;
+  min-height: 200px;
+  padding: 10px;
+  font-size: 1.50rem;
+  border-radius: 20px;
+}
+
+.hintList li {
+  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-left: 40%;
+}
+
+.hintList ul {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  list-style-type: square;
+
+}
+
+.hintList ul .open-list-svg {
+  margin-right: 10px;
+}
+
+.hintList button {
+  font-size: 2rem;
+}
+
+
+/* RULES */
+.rules {
+  border: 3px solid rgb(251 191 36);;
+  position: absolute;
+  width: 342px;
+  min-height: 350px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-70%, -50%);
+  z-index: 3;
+}
+
+.rules-play {
+  background-color: rgb(254 252 232);
+  border: 1p solid red;
+  font-size: 1.5rem;
+  padding: 10px;
+  text-align: center;
+}
+
+.rules-list {
+  padding: 10px;
+  background-color: rgb(245 245 245);  
+  min-height: inherit;
+}
+
+.rules-list p {
+  margin-bottom: 10px;
+  color: #21232f;
+  line-height: 2;
+  text-align: center;
+  padding: 5px;
+}
+
+
+/* CIRCULAR PROGRESS CONTAINER */
+.circular-progress-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.circular-progress-container h1 {
+  text-align: center;
+}
+
+.circular-progress-container .circle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 65%;
+}
+
+
+.container {
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  padding: 5px;
+  height: 650px;
+}
+
+.words {
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.app-container {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.inputs {
+  width: 80vw;
+  max-width: 290px;
+}
+
+.center {
+  width: 90%;
+  margin: 25px auto;
+}
+
+.honeycomb {
+  position: relative;
+  height: 275px;
+}
+
+.cell {
+  position: absolute;
+  top: 33.3333333333%;
+  left: 30%;
+  width: 40%;
+  height: 33.3333333333%;
+}
+
+.cell:nth-child(1) {
+  transform: translate(0, 0);
+}
+
+.cell:nth-child(2) {
+  transform: translate(-75%, -50%);
+}
+
+.cell:nth-child(3) {
+  transform: translate(0, -100%);
+}
+
+.cell:nth-child(4) {
+  transform: translate(75%, -50%);
+}
+
+.cell:nth-child(5) {
+  transform: translate(75%, 50%);
+}
+
+.cell:nth-child(6) {
+  transform: translate(0, 100%);
+}
+
+.cell:nth-child(7) {
+  transform: translate(-75%, 50%);
+}
+
+.cell-letter {
+  font-weight: 700;
+  font-size: 1.875em;
+  text-anchor: middle;
+  text-transform: uppercase;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.center-letter .cell-fill {
+  cursor: pointer;
+  fill: #f7da21;
+  transition: all 100ms;
+}
+
+.outer-letter .cell-fill {
+  cursor: pointer;
+  fill: #e6e6e6;
+  transition: all 100ms;
+}
+
+.buttons {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 0;
+  width: 5.5em;
+  min-width: 5.5em;
+  height: 3em;
+  background-color: #fff;
+  font-size: 1em;
+  margin: 0 8px;
+  color: #333;
+  border: 1px solid #dcdcdc;
+  border-radius: 2.5em;
+  letter-spacing: 0.01em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  margin-block-start: 1rem;
+}
+
+.buttons .shuffle {
+  min-width: 3rem !important;
+}
+
+.custom-cursor {
+  caret-color: #ffcf24;
+  font-size: 32px;
+  font-weight: 500;
+  text-align: center;
+  border: none;
+  outline: none;
+  /* animation: blink 1s step-start infinite; */
+}
+
+.central-letter {
+  color: #ffcf24;
+}
+
+@keyframes blink-caret {
+  50% {
+    caret-color: transparent; /* Hide the caret */
+  }
+  50% {
+    caret-color: #ffcf24; /* Show the caret */
+  }
+}
+
+/* Apply blink animation only to the caret */
+.custom-cursor:focus {
+  animation: blink-caret 1s step-end infinite;
+}
+
+.outeral-letter,
+.central-letter {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+
+.score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Arial, sans-serif";
+  font-size: 32px;
+  margin: 20px 0;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #4caf50, #81c784);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  font-weight: bold;
+}
+
+.score-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* pushing words container to a bit left */
+.words-container {
+  margin-right: 75px;
+}
+
+/* SUCCESS AND ERROR MESSAGES */
+
+.messages-container {
+  position: absolute;
+  top: -35px;
+  left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.found-message {
+  width: 130px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 4px 8px 4px 8px;
+  border-radius: 10px;
+}
+
+.unfound {
+  display: none;
+}
+
+.word-not-found,
+.missing-central-letter,
+.show-empty-error,
+.successMessage {
+  min-width: 130px;
+  color: white;
+  text-align: center;
+  padding: 4px 8px 4px 8px;
+  border-radius: 10px;
+}
+
+.word-not-found,
+.missing-central-letter,
+.show-empty-error {
+  background-color: black;
+}
+
+.successMessage {
+  background-color: limegreen;
+}
+
+.hiddenSuccess,
+.hide-empty-error,
+.hide-missing-message {
+  display: none;
+}
+
+.not-found-message {
+  display: none;
+}
+
+/* WORDS LIST THAT ARE ALREADY FOUND*/
+
+.words-list-container {
+  height: 600px;
+  width: 400px;
+  border: 3px solid rgb(250 204 21);
+  background-color: rgb(255 251 235);  
+  overflow-y: auto; /* Add vertical scrollbar if content overflows */
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+}
+
+.words-list {
+  margin-left: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.word {
+  width: 100px;
+  list-style-type: none;
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ccc; /* Grey line below each word */
+  padding-left: 10px;
+}
+
+/* Additional hover effect for list items */
+.word:hover {
+  background-color: rgb(254 240 138);  
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.num-of-words-in-box {
+  margin-left: 40px;
+}
+
+
+/* LEVELS */
+
+.levels-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 25px;
+  position: relative;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  margin-left: 6px;
+}
+
+.progress-container::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  height: 4px;
+  background-color: #ddd;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.dot,
+.square {
+  height: 8px;
+  width: 8px;
+  background-color: #bbb;
+  margin: 0 24px;
+  z-index: 2; /* Ensure dots and square are above the progress bar line */
+  color: black;
+  font-size: 15px;
+  text-align: center;
+}
+
+.dot {
+  border-radius: 50%;
+}
+
+.dot:first-child {
+  margin-left: 0; /* Ensure the first dot is at the start */
+}
+
+.dot + .dot,
+.dot + .square {
+  margin-left: 25px; /* Ensure spacing between dots */
+}
+
+.square {
+  margin-right: -18px; /* Ensure the square is at the end */
+}
+
+.dot.active {
+  background-color: rgb(247, 218, 33);
+  height: 34px;
+  width: 34px;
+  border-radius: 50%;
+}
+
+.filled {
+  background-color: rgb(247, 218, 33);
+}
+
+.dot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ranking */
+.ranking {
+  display: inline-block;
+  color: #13141c;
+  font-size: 15px;
+  font-weight: 400;
+  text-align: left;
+  padding: 6px 0 0;
+  width: 100px;
+}
+
+.current-rank {
+  font-weight: 700;
+}
+
+.required-score-to-next-rank {
+  color: #5e6176;
+  font-size: 12px;
+}
+
+/* CORRECT GUESSES SECTION ON SMALL DEVICES */
+
+.correct-guesses-section {
+  display: none;
+}
+
+/* Correct Guess Open List Start */
+.guess-words-open-list {
+  z-index: 2;
+  background-color: #eef2f8;
+  min-width: 400px;
+  min-height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+/* common style for both to take them out of normal box flow */
+.guess-words-close-list,
+.guess-words-open-list {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  z-index: 2;
+}
+
+/* computed style for the words-list on smaller devices 
+to appear in the middle and increase height downward only */
+.guess-words-open-list {
+  transform: translateX(-50%);
+  left: 50%;
+  top: 29%;
+}
+
+.guess-words-open-list ul {
+  padding: 12px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  margin-top: 30px;
+  margin-left: 5px;
+  /* by default it is row */
+  /* grid-auto-flow: row;  */
+}
+
+.open-list-svg {
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  opacity: 0.5;
+}
+
+.open-list-svg:hover {
+  right: 10px;
+  top: 10px;
+  opacity: 1;
+}
+/* Correct Guess Open List End */
+
+.guessed-word {
+  list-style-type: none;
+  margin-bottom: 15px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Correct Guess Close List Start */
+.guess-words-close-list {
+  background-color: #eef2f8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 400px;
+  height: 40px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
+
+.guess-words-close-list {
+  top: 32%;
+}
+
+.guess-words-close-list ul {
+  padding-left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.guess-words-close-list ul li {
+  list-style-type: none;
+  margin-left: 5px;
+}
+/* Correct Guess Close List End */
+
+
+.words {
+  margin-top: 25px;
+}
+
+.container {
+  max-width: 600px;
+}
+
+/* MAKING  THE ENTIRE HEXAGON CLICKCABLE */
+.cell {
+  pointer-events: bounding-box;
+}
+
+/* CHANGING HEXAGON POSITION BASED ON CLICK */
+.cell-fill:active, .cell-letter:active {
+  transform: translateY(4px);
+  transform: translateX(4px);
+}
+
+/* SHOW CONGRATULATION MESSAGE WHEN USER LEVEL UP */
+.congratulation-message {
+  position: absolute;
+  top: 50%;
+  left: 7%;
+  z-index: 2;
+  background-color: rgb(252 211 77);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* FOOTER */
+.footer .spelling-mastery {
+  font-size: 24px;
+  font-weight: bolder;
+}
+
+/* MEDIA QUEREIS */
+
+@media (min-width: 1280px) {
+  .container {
+      max-width: 600px;
+  }
+}
+
+
+@media (width <=1100px) {
+  .words-list-container {
+    width: 350px;
+  }
+
+  .words-container {
+    margin-right: 25px;
+  }
+
+  .word {
+    width: 90px;
+  }
+
+  .dot + .dot,
+  .dot + .square {
+    margin-left: 20px; /* Ensure spacing between dots */
+  }
+
+  @media (width <=1050px) {
+    .words-list-container {
+      width: 330px;
+    }
+    .words-container {
+      margin-right: 20px;
+    }
+  }
+
+  @media (width <= 1000px) {
+    .words-list-container {
+      width: 300px;
+      height: 550px;
+    }
+
+    .words-container {
+      margin-right: 40px;
+    }
+    .dot + .dot,
+    .dot + .square {
+      margin-left: 20px; /* Ensure spacing between dots */
+    }
+    .progress-container {
+      margin-left: 0;
+    }
+  }
+}
+
+
+@media (width <= 960px) {
+  .words-container {
+    display: none;
+  }
+  .correct-guesses-section {
+    display: block;
+  }
+
+  .rules {
+    transform: translate(-50%, -50%);
+  }
+
+  /* setting margin-top to input text to provide some room for words list */
+  .words {
+    margin-top: 80px;
+  }
+
+}
+
+@media (width <= 768px) {
+  .circular-progress-container h1{
+    margin-left: 70px;
+  }
+
+  .hintList {
+    width: 90%;
+  }
+
+}
+
+@media (width <= 645px) {
+  .dot + .dot,
+  .dot + .square {
+    margin-left: 15px; /* Ensure spacing between dots */
+  }
+  @media (width <= 550px) {
+    .dot + .dot,
+    .dot + .square {
+      margin-left: 10px; /* Ensure spacing between dots */
+    }
+  }
+
+  @media (width <= 430px) {
+    .dot + .dot,
+    .dot + .square {
+      margin-left: 5px; /* Ensure spacing between dots */
+    }
+
+    .progress-container {
+      margin-left: 0;
+    }
+  }
+}
