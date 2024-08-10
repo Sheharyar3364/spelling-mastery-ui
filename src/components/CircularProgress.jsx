@@ -54,7 +54,7 @@ useEffect(() => {
 
       }, 1000); // Delay between confetti ending and loading state
 
-    }, 4000); // Delay between threshold met and level update
+    }, 3000); // Delay between threshold met and level update
 
   }
 }, [foundWords, setGameLevel]);
