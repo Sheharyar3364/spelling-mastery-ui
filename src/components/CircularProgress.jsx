@@ -101,8 +101,8 @@ useEffect(() => {
 
 
   // to determine determistic expected words from user in order to win and level up
-  const totalWords = totalAnswers().length
-  // const totalWords = 3
+  // const totalWords = totalAnswers().length
+  const totalWords = 3
 
 
   //  user has to find Half of the words in order to win and level up to next level
