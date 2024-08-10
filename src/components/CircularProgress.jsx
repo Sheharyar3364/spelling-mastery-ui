@@ -57,7 +57,7 @@ useEffect(() => {
     }, 3000); // Delay between threshold met and level update
 
   }
-}, [foundWords, setGameLevel]);
+}, [foundWords, setGameLevel, parseInt(localStorage.getItem("increasLimit"))]);
 
 
   
