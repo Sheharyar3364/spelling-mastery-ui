@@ -52,7 +52,7 @@ useEffect(() => {
           setLoading(false);
         }, 4000);
 
-      }, 1000); // Delay between confetti ending and loading state
+      }, 0); // Delay between confetti ending and loading state
 
     }, 3000); // Delay between threshold met and level update
 
