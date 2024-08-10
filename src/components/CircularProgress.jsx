@@ -33,7 +33,7 @@ export function CircularProgress( {setLoading, showConfetti, setShowConfetti, up
   // *********************************** BUSINESS LOGIC START *********************************************
 // increasing level as soon as the threshold is met
 useEffect(() => {
-  if (levelUpThreshold === foundWords.length) {
+  if (levelUpThreshold === foundWords.length || parseInt(localStorage.getItem("increaseLimit") == 100)) {
     setShowConfetti(true);
     foundWords.length = 0;
 
