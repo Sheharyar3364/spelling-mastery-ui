@@ -50,11 +50,10 @@ function App() {
   const [showMessage, setShowMessage] = useState(false);
   const [guess, dispatchGuess] = useReducer(scoreReducer, { score: 0 });
   // const [foundWords, setFoundWords] = useState([]);
-  const [guestView, setGuestView] = useState(true)
   const [gameLevelState, dispatchGameLevelState] = useReducer(GameLevelReducer, {
     currentLevel: localStorage.getItem("currentLevel") != null ? JSON.parse(localStorage.getItem("currentLevel")) : 1
   })
-  const {user, gameLevel, setGameLevel} = useContext(AuthContext)
+  const {user, gameLevel, setGameLevel, guestView, setGuestView} = useContext(AuthContext)
   const [loading, setLoading] = useState(false) 
 
   const [showConfetti, setShowConfetti] = useState(false)

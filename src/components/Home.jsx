@@ -11,11 +11,14 @@ export function Home( {setGuestView, foundWords} ) {
     const startPlay = () => {
         localStorage.removeItem("increaseLimit")
         localStorage.removeItem("foundWords")
+        if(localStorage.getItem(`randomIndex${gameLevel}`)) {
+            localStorage.removeItem(`randomIndex${gameLevel}`)
+        }
         foundWords.splice(0, foundWords.length)
         setPlay(true)
         setTimeout(() => {
             setGuestView(false)
-        }, 1000)
+        }, 1500)
     }
 
     const continuePlay = () => {

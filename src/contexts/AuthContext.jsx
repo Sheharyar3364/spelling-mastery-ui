@@ -16,7 +16,9 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
     const [successMessage, setSuccessMessage] = useState(false)
-    const [gameLevel, setGameLevel] = useState(() => localStorage.getItem("gameLevel") ? JSON.parse(localStorage.getItem("gameLevel")) : 1)
+    const [gameLevel, setGameLevel] = useState()
+    const [guestView, setGuestView] = useState(true)
+
 
     let login = async (event) => {
         event.preventDefault()
@@ -29,11 +31,12 @@ export const AuthProvider = ({ children }) => {
         })
         
         let data = await response.json()
-        console.log(data)
+        console.log("data", data)
         
         if(response.status === 200) {
             setAuthTokens(data)
             setUser(jwtDecode(data.access))
+            setGuestView(true)
             localStorage.setItem("authTokens", JSON.stringify(data))
             navigate("")
         }
@@ -41,6 +44,9 @@ export const AuthProvider = ({ children }) => {
     }
 
     const logout = () => {
+        if(localStorage.getItem(`randomIndex${gameLevel}`)) {
+            localStorage.removeItem(`randomIndex${gameLevel}`)
+        }
         setAuthTokens(null)
         setUser(null)
         localStorage.removeItem("authTokens")
@@ -112,6 +118,12 @@ export const AuthProvider = ({ children }) => {
         }
     }, [])
 
+    useEffect(() => {
+        if(user) {
+            setGameLevel(user.level)
+        }
+    }, [user])
+
 
 
 
@@ -120,11 +132,13 @@ export const AuthProvider = ({ children }) => {
         authTokens: authTokens,
         successMessage: successMessage,
         gameLevel: gameLevel,
+        guestView: guestView,
         setSuccessMessage: setSuccessMessage,
         login: login,
         logout: logout,
         updateLevel: updateLevel,
         setGameLevel: setGameLevel,
+        setGuestView: setGuestView,
     }
 
     useEffect(() => {

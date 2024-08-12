@@ -19,7 +19,7 @@ export function CircularProgress( {setLoading, showConfetti, setShowConfetti, up
   // Initialize increaseLimit from localStorage or default to 0
   const [increaseLimit, setIncreaseLimit] = useState(() => {
     const savedIncreaseLimit = localStorage.getItem("increaseLimit");
-    return savedIncreaseLimit != null ? JSON.parse(savedIncreaseLimit) : 0;
+    return savedIncreaseLimit ? JSON.parse(savedIncreaseLimit) : 0;
   })
 
 
@@ -33,6 +33,7 @@ export function CircularProgress( {setLoading, showConfetti, setShowConfetti, up
   // *********************************** BUSINESS LOGIC START *********************************************
 // increasing level as soon as the threshold is met
 useEffect(() => {
+  console.log(increaseLimit)
   if (levelUpThreshold === foundWords.length || parseInt(localStorage.getItem("increaseLimit") == 100)) {
     setShowConfetti(true);
     foundWords.length = 0;
@@ -57,7 +58,7 @@ useEffect(() => {
     }, 3000); // Delay between threshold met and level update
 
   }
-}, [foundWords, setGameLevel, parseInt(localStorage.getItem("increasLimit"))]);
+}, [foundWords, setGameLevel, increaseLimit]);
 
 
   
@@ -101,8 +102,8 @@ useEffect(() => {
 
 
   // to determine determistic expected words from user in order to win and level up
-  const totalWords = totalAnswers().length
-  // const totalWords = 3
+  // const totalWords = totalAnswers().length
+  const totalWords = 5
 
 
   //  user has to find Half of the words in order to win and level up to next level
@@ -120,7 +121,10 @@ useEffect(() => {
   // progressing percentage in the Circular Progress when score increases
   useEffect(() => {
     if(guess.score) {
-      if (increaseLimit <= 100) {
+      if(increaseLimit + increaseChunk > 100) {
+        console.log("inside > 100")
+        setIncreaseLimit(100)
+      } else if (increaseLimit < 100) {
         console.log("below threshold")
         setIncreaseLimit(prevChunk => prevChunk + increaseChunk)
       }
