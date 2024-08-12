@@ -33,8 +33,7 @@ export function CircularProgress( {setLoading, showConfetti, setShowConfetti, up
   // *********************************** BUSINESS LOGIC START *********************************************
 // increasing level as soon as the threshold is met
 useEffect(() => {
-  console.log(increaseLimit)
-  if (levelUpThreshold === foundWords.length || parseInt(localStorage.getItem("increaseLimit") == 100)) {
+  if (increaseLimit == 100) {
     setShowConfetti(true);
     foundWords.length = 0;
 
@@ -102,8 +101,8 @@ useEffect(() => {
 
 
   // to determine determistic expected words from user in order to win and level up
-  // const totalWords = totalAnswers().length
-  const totalWords = 5
+  const totalWords = totalAnswers().length
+  // const totalWords = 5
 
 
   //  user has to find Half of the words in order to win and level up to next level
@@ -116,16 +115,15 @@ useEffect(() => {
     levelUpThreshold = Math.ceil(totalWords / 2)
   }
 
+
   const increaseChunk = Math.ceil( 100 / levelUpThreshold )
 
   // progressing percentage in the Circular Progress when score increases
   useEffect(() => {
     if(guess.score) {
       if(increaseLimit + increaseChunk > 100) {
-        console.log("inside > 100")
         setIncreaseLimit(100)
       } else if (increaseLimit < 100) {
-        console.log("below threshold")
         setIncreaseLimit(prevChunk => prevChunk + increaseChunk)
       }
      
