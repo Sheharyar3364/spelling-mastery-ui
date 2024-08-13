@@ -31,13 +31,12 @@ export const AuthProvider = ({ children }) => {
         })
         
         let data = await response.json()
-        console.log("data", data)
         
         if(response.status === 200) {
-            setAuthTokens(data)
             setUser(jwtDecode(data.access))
-            setGuestView(true)
             localStorage.setItem("authTokens", JSON.stringify(data))
+            setAuthTokens(data)
+            setGuestView(true)
             navigate("")
         }
         
@@ -91,6 +90,8 @@ export const AuthProvider = ({ children }) => {
         const data = await response.json()
         if(response.status == 200) {
             setGameLevel(data.level)
+            localStorage.removeItem("hasGameStarted")
+            setGuestView(true)
             localStorage.setItem("gameLevel", JSON.stringify(data.level))
         }
     }
@@ -106,24 +107,51 @@ export const AuthProvider = ({ children }) => {
         })
 
         const data = await response.json()
-        if(response.status == 200) {
+        if(response.status == 201) {
             setGameLevel(data.level)
             localStorage.setItem("gameLevel", JSON.stringify(data.level))
         }
     }
 
+
+    const startGame = async () => {
+        const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));
+        const puzzle_id = JSON.parse(localStorage.getItem("puzzle_id"));
+        
+    
+        let response = await fetch(`${BASE_URL}/bee/start_game/`, {  // Note the trailing slash
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authTokensInLocalStorage?.access}`
+            },
+            body: JSON.stringify({"puzzle_id": puzzle_id})
+        });
+    
+        if(response.status === 201) {  // Status code changed to 201
+            localStorage.removeItem("puzzle_id")
+            let data = await response.json();
+            localStorage.setItem("userGameId", data.user_game_id)
+            return data.user_game_id;
+        } else {
+            console.error("Failed to start the game:", response.status);
+            return null;
+        }
+    }
+
+    
     useEffect(() => {
         if(authTokens) {
             getUserLevel()
         }
     }, [])
 
+
     useEffect(() => {
         if(user) {
             setGameLevel(user.level)
         }
     }, [user])
-
 
 
 
@@ -139,6 +167,7 @@ export const AuthProvider = ({ children }) => {
         updateLevel: updateLevel,
         setGameLevel: setGameLevel,
         setGuestView: setGuestView,
+        startGame: startGame,
     }
 
     useEffect(() => {

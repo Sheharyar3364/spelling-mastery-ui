@@ -36,14 +36,10 @@ export function Honeycomb() {
 
     
     const hints = () => {
-        let listHints = data.filter(answer => { 
-            return answer.puzzle === puzzle[puzzle.length - 1].id
-        })
-        const filteredListHints = listHints.filter(hint => {
-            return !foundWords.includes(hint.word)
-        })
         // console.log(filteredListHints)
-        const hintItems = filteredListHints.slice(0, 10)
+        console.log("hints", data[0].words)
+        const hintItems = data[0].words.slice(0, 10)
+        console.log("hintItems", hintItems)
         setHintItems(hintItems)
         setIsOpen(true)
     }
@@ -56,10 +52,11 @@ export function Honeycomb() {
     }
 
     const enter = () => {
+        const answers = data[0]?.words
         handleWordValidation(
             word,
             setShowMessage,
-            data,
+            answers,
             puzzle,
             foundWords,
             setFoundWords,
@@ -74,7 +71,7 @@ export function Honeycomb() {
             {isOpen ? <section className='hintList bg-yellow-50 border-solid border-2 border-yellow-400' onClick={() => setIsOpen(!isOpen)}>
                 <ul>
                     {
-                       hintItems.map(hint => <li key={hint.word}>{hint.word.slice(0, hintCount) + "..."}</li>)
+                       hintItems.map(hint => <li key={hint}>{hint.slice(0, hintCount) + "..."}</li>)
                     }
                     <svg className="open-list-svg" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 24 24">
                     <path d="M 12 2 C 6.4889971 2 2 6.4889971 2 12 C 2 17.511003 6.4889971 22 12 22 C 17.511003 22 22 17.511003 22 12 C 22 6.4889971 17.511003 2 12 2 z M 12 4 C 16.430123 4 20 7.5698774 20 12 C 20 16.430123 16.430123 20 12 20 C 7.5698774 20 4 16.430123 4 12 C 4 7.5698774 7.5698774 4 12 4 z M 8.7070312 7.2929688 L 7.2929688 8.7070312 L 10.585938 12 L 7.2929688 15.292969 L 8.7070312 16.707031 L 12 13.414062 L 15.292969 16.707031 L 16.707031 15.292969 L 13.414062 12 L 16.707031 8.7070312 L 15.292969 7.2929688 L 12 10.585938 L 8.7070312 7.2929688 z"></path>
@@ -86,17 +83,13 @@ export function Honeycomb() {
             </section> : ''}
 
             <article className="honeycomb">
-                {puzzle[puzzle.length -1] &&
-                    <>
-                            <Letter letter={puzzle[puzzle.length - 1].central_letter} isCenter={true} />
-                            <Letter letter={puzzle[puzzle.length - 1].characters[randomArr[0]]} isCenter={false} />
-                            <Letter letter={puzzle[puzzle.length - 1].characters[randomArr[1]]} isCenter={false} />
-                            <Letter letter={puzzle[puzzle.length - 1].characters[randomArr[2]]} isCenter={false} />
-                            <Letter letter={puzzle[puzzle.length - 1].characters[randomArr[3]]} isCenter={false} />
-                            <Letter letter={puzzle[puzzle.length - 1].characters[randomArr[4]]} isCenter={false} />
-                            <Letter letter={puzzle[puzzle.length - 1].characters[randomArr[5]]} isCenter={false} />
-                    </>
-                }
+                    <Letter letter={puzzle.central_letter} isCenter={true} />
+                    <Letter letter={puzzle.characters[randomArr[0]]} isCenter={false} />
+                    <Letter letter={puzzle.characters[randomArr[1]]} isCenter={false} />
+                    <Letter letter={puzzle.characters[randomArr[2]]} isCenter={false} />
+                    <Letter letter={puzzle.characters[randomArr[3]]} isCenter={false} />
+                    <Letter letter={puzzle.characters[randomArr[4]]} isCenter={false} />
+                    <Letter letter={puzzle.characters[randomArr[5]]} isCenter={false} />
                 
             </article>
             <section className="buttons">

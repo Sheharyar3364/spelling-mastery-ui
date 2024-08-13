@@ -44,12 +44,9 @@ const BASE_URL = import.meta.env.VITE_API_URL
 
 function App() {
   const [data, setData] = useState([]);
-  const [puzzle, setPuzzle] = useState([])
-  const [puzzleState, setPuzzleState] = useState([])
-  const [puzzleIds, setPuzzleIds] = useState([])
+  const [puzzle, setPuzzle] = useState()
   const [showMessage, setShowMessage] = useState(false);
   const [guess, dispatchGuess] = useReducer(scoreReducer, { score: 0 });
-  // const [foundWords, setFoundWords] = useState([]);
   const [gameLevelState, dispatchGameLevelState] = useReducer(GameLevelReducer, {
     currentLevel: localStorage.getItem("currentLevel") != null ? JSON.parse(localStorage.getItem("currentLevel")) : 1
   })
@@ -70,28 +67,20 @@ function App() {
   }, [foundWords]);
 
 
+
   useEffect(() => {
     localStorage.setItem("currentLevel", JSON.stringify(gameLevelState.currentLevel))
   }, [gameLevelState])
   
-  const prevGameLevelState = useRef(gameLevel);
 
-  useEffect(() => {
-    axios.get(`${BASE_URL}/bee/answer/`)
-      .then(response => {
-        setData(response.data)
-      })
-      .catch(error => {
-        console.error('Error fetching answers:', error);
-      });
-  }, [])
 
   // fetching answers for the puzzle to validate against
   useEffect(() => {
     // Check if puzzles are fetched and puzzle array is not empty
-    if (puzzle.length > 0 && gameLevel == 1) {
-      const lastPuzzleId = puzzle[puzzle.length - 1].id;
-      axios.get(`${BASE_URL}/bee/answer/by-puzzle/${lastPuzzleId}/`)
+    if (puzzle) {
+      const puzzleId = puzzle.id
+      localStorage.setItem("puzzle_id", puzzleId)
+      axios.get(`${BASE_URL}/bee/answer/by-puzzle/${puzzleId}/`)
         .then(response => {
           setData(response.data);
         })
@@ -99,71 +88,74 @@ function App() {
           console.error('Error fetching answers:', error);
         });
     }
-  }, [puzzle, setPuzzle]);
+  }, [puzzle]);
 
-  function getRandomElementId(array) {
-    const result = Math.floor(Math.random() * array.length);
-    return result
+  
+
+  const fetchUnplayedPuzzles = async () => {
+    const token = JSON.parse(localStorage.getItem('authTokens')); 
+    try {
+      const response = await fetch(`${BASE_URL}/bee/unplayed_puzzle/`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token?.access}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if(!response.ok) {
+        console.log("User not authenticated")
+        return
+      }
+  
+      const data = await response.json();
+      console.log("data", data)
+      setPuzzle(data)
+    } catch (error) {
+      console.error('Error fetching unplayed puzzles:', error);
+    }
+  };
+
+
+
+const completeGame = async (userGameId) => {
+  const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));  
+
+    let response = await fetch(`${BASE_URL}/bee/complete_puzzle/`, {
+    method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authTokensInLocalStorage?.access}`
+      },
+      body: JSON.stringify({"gameid": userGameId})
+  });
+
+  if(response.status === 200) {  // Status code changed to 201
+    let data = await response.json();
+    localStorage.removeItem("userGameId")
+    await fetchUnplayedPuzzles()
+  } else {
+      console.error("Failed to start the game:", response.status);
+      return null;
   }
+}
   
 
 
   // fetching puzzle
   useEffect(() => {
-    const fetchData = async () => {
+    if(user) {
+      fetchUnplayedPuzzles()
+    }
+  }, [user]);
 
-      try {
-        const response = await axios.get(`${BASE_URL}/bee/puzzle/`);
-        setPuzzle(response.data);
-        setPuzzleState(response.data)
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-
-  }, []);
 
 
 
   useEffect(() => {
-    if (!puzzleState || puzzleState.length === 0) {
-      return; // Exit if puzzle data is not yet available
-    }
-    // Conditional fetch logic as explained above
-
-    const puzzleIds = puzzleState.map(puzzle => puzzle.id)
-
-
-    let randomIndex = getRandomElementId(puzzleIds)
-
-
-    if (gameLevel !== 1) {
-      let savedRandomIndex = randomIndex;
-      const savedLevel = JSON.parse(localStorage.getItem("gameLevel"))
-      try {
-        savedRandomIndex = localStorage.getItem(`randomIndex${savedLevel}`) != null ? localStorage.getItem(`randomIndex${savedLevel}`) : randomIndex
-      } catch (e) { console.log(e) }
-      axios.get(`${BASE_URL}/bee/puzzle/${puzzleIds[savedRandomIndex]}/`)
-        .then(response => {
-          setPuzzle([response.data]);
-          if (savedLevel !== prevGameLevelState.current) {
-            localStorage.setItem(`randomIndex${savedLevel}`, randomIndex)
-            localStorage.setItem("isSet", true)
-            localStorage.removeItem(`randomIndex${prevGameLevelState.current}`)
-            localStorage.removeItem("foundWords")
-            foundWords.length = 0;
-          }
-          // Update the ref value for the next comparison
-          prevGameLevelState.current = savedLevel;
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    }
-
-  }, [gameLevel, setGameLevel, puzzleState]);
+    const userGameId = JSON.parse(localStorage.getItem("userGameId"))
+    completeGame(userGameId)
+  }, [gameLevel])
 
 
 

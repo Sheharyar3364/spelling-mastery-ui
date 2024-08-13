@@ -33,11 +33,12 @@ export function Word() {
   }, [showMessage])
 
   const handleEnter = (event) => {
+    const answers = data[0].words
     if (event.key === "Enter") {
       handleWordValidation(
         word,
         setShowMessage,
-        data,
+        answers,
         puzzle,
         foundWords,
         setFoundWords,

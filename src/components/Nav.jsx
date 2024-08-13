@@ -11,7 +11,6 @@ export function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { user, logout } = useContext(AuthContext)
 
-
   const handleRules = () => {
     setIsOpen(true)
   }
@@ -23,6 +22,7 @@ export function Nav() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
+
 
   return (
     <>
