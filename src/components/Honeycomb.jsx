@@ -37,9 +37,9 @@ export function Honeycomb() {
     
     const hints = () => {
         // console.log(filteredListHints)
-        console.log("hints", data[0].words)
+        // console.log("hints", data[0].words)
         const hintItems = data[0].words.slice(0, 10)
-        console.log("hintItems", hintItems)
+        // console.log("hintItems", hintItems)
         setHintItems(hintItems)
         setIsOpen(true)
     }

@@ -109,7 +109,7 @@ function App() {
       }
   
       const data = await response.json();
-      console.log("data", data)
+      // console.log("data", data)
       setPuzzle(data)
     } catch (error) {
       console.error('Error fetching unplayed puzzles:', error);

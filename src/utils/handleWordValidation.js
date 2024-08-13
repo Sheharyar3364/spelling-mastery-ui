@@ -8,7 +8,7 @@ export const handleWordValidation = (
   dispatchGuess
 ) => {
   const lowerCaseWord = word.content.toLowerCase();
-  console.log("lowercaseword", lowerCaseWord)
+  // console.log("lowercaseword", lowerCaseWord)
 
   if (lowerCaseWord.length === 0) {
     setShowMessage("empty");
@@ -18,8 +18,8 @@ export const handleWordValidation = (
     setShowMessage(true); // Word already found
   } else if (data) {
     const validWord = data.find(answer => answer === lowerCaseWord)
-    console.log("data", data)
-    console.log("valid word", validWord)
+    // console.log("data", data)
+    // console.log("valid word", validWord)
     if (validWord) {
       if(!foundWords.includes(validWord)) {
         setFoundWords([...foundWords, lowerCaseWord]);
