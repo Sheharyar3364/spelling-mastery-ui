@@ -108,7 +108,7 @@ function App() {
           <ConfettiComp />
           <h1 className="congratulation-message text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
             Congratulations!
-            Level {gameLevel} completed.
+            Level {JSON.parse(localStorage.getItem("gameLevel")) != null ? JSON.parse(localStorage.getItem("gameLevel"))  : gameLevel} completed.
           </h1>
         </div>
       }
