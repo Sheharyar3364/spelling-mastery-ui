@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 
 const AuthContext = createContext()
@@ -18,6 +19,20 @@ export const AuthProvider = ({ children }) => {
     const [successMessage, setSuccessMessage] = useState(false)
     const [gameLevel, setGameLevel] = useState()
     const [guestView, setGuestView] = useState(true)
+    const [fetchNewGame, setFetchNewGame] = useState(false)
+    const [puzzle, setPuzzle] = useState()
+    const [data, setData] = useState([]);
+    const [temproryPuzzleData, setTemporaryPuzzleData] = useState("")
+
+
+
+
+  // Initialize increaseLimit from localStorage or default to 0
+  const [increaseLimit, setIncreaseLimit] = useState(() => {
+    const savedIncreaseLimit = localStorage.getItem("increaseLimit");
+    return savedIncreaseLimit ? JSON.parse(savedIncreaseLimit) : 0;
+  })
+
 
 
     let login = async (event) => {
@@ -91,7 +106,6 @@ export const AuthProvider = ({ children }) => {
         if(response.status == 200) {
             setGameLevel(data.level)
             localStorage.removeItem("hasGameStarted")
-            setGuestView(true)
             localStorage.setItem("gameLevel", JSON.stringify(data.level))
         }
     }
@@ -107,6 +121,7 @@ export const AuthProvider = ({ children }) => {
         })
 
         const data = await response.json()
+        console.log("data", data)
         if(response.status == 201) {
             setGameLevel(data.level)
             localStorage.setItem("gameLevel", JSON.stringify(data.level))
@@ -116,35 +131,162 @@ export const AuthProvider = ({ children }) => {
 
     const startGame = async () => {
         const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));
-        const puzzle_id = JSON.parse(localStorage.getItem("puzzle_id"));
+        const puzzle_id = JSON.parse(localStorage.getItem("puzzle_id")) != null ? JSON.parse(localStorage.getItem("puzzle_id")) : "";
         
-    
-        let response = await fetch(`${BASE_URL}/bee/start_game/`, {  // Note the trailing slash
+        if(puzzle_id) {
+            let response = await fetch(`${BASE_URL}/bee/start_game/`, {  // Note the trailing slash
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authTokensInLocalStorage?.access}`
+                },
+                body: JSON.stringify({"puzzle_id": puzzle_id})
+            });
+        
+            if(response.status === 201) {  // Status code changed to 201
+                localStorage.removeItem("puzzle_id")
+                let data = await response.json();
+                localStorage.setItem("userGameId", data.user_game_id)
+                return data.user_game_id;
+            } else {
+                console.error("Failed to start the game:", response.status);
+                return null;
+            }
+        }
+    }
+
+
+
+  const fetchUnplayedPuzzles = async () => {
+    const token = JSON.parse(localStorage.getItem('authTokens')); 
+    try {
+      const response = await fetch(`${BASE_URL}/bee/unplayed_puzzle/`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token?.access}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if(!response.ok) {
+        console.log("User not authenticated")
+        return
+      }
+  
+      const data = await response.json();
+      localStorage.removeItem("puzzle_id")
+      localStorage.setItem("userGameId", data.user_game_id)
+      return data
+    } catch (error) {
+      console.error('Error fetching unplayed puzzles:', error);
+    }
+  };
+
+
+  const instantFetchUnplayedPuzzles = async () => {
+    const token = JSON.parse(localStorage.getItem('authTokens')); 
+    try {
+      const response = await fetch(`${BASE_URL}/bee/unplayed_puzzle/`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token?.access}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if(!response.ok) {
+        console.log("User not authenticated")
+        return
+      }
+  
+      const data = await response.json();
+      setPuzzle(data)
+      localStorage.removeItem("puzzle_id")
+      localStorage.setItem("userGameId", data.user_game_id)
+    } catch (error) {
+      console.error('Error fetching unplayed puzzles:', error);
+    }
+  };
+
+
+
+    const completeGame = async (userGameId) => {
+        const puzzleData = await fetchUnplayedPuzzles()
+        setTemporaryPuzzleData(puzzleData)
+        const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));  
+        let response = await fetch(`${BASE_URL}/bee/complete_puzzle/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${authTokensInLocalStorage?.access}`
             },
-            body: JSON.stringify({"puzzle_id": puzzle_id})
+            body: JSON.stringify({"gameid": userGameId})
         });
-    
-        if(response.status === 201) {  // Status code changed to 201
-            localStorage.removeItem("puzzle_id")
-            let data = await response.json();
-            localStorage.setItem("userGameId", data.user_game_id)
-            return data.user_game_id;
+
+        if(response.status === 200) {  // Status code changed to 201
+            localStorage.removeItem("userGameId")
+            // startGame()
         } else {
             console.error("Failed to start the game:", response.status);
             return null;
         }
     }
 
+
+    const skipGame = async (userGameId) => {
+        console.log("running skip")
+        console.log(typeof(userGameId))
+        setTemporaryPuzzleData(puzzle)
+        const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));  
+        let response = await fetch(`${BASE_URL}/bee/skip_puzzle/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authTokensInLocalStorage?.access}`
+            },
+            body: JSON.stringify({"gameid": userGameId, "status": 3})
+        });
+
+        if(response.status === 200) {  
+            instantFetchUnplayedPuzzles()
+            localStorage.removeItem("userGameId")
+        } else {
+            console.error("Failed to start the game:", response.status);
+            return null;
+        }
+    }
+
+
+  // fetching answers for the puzzle to validate against
+  useEffect(() => {
+    console.log("puzzle", puzzle)
+    if (puzzle) {
+      const puzzleId = puzzle.id
+      localStorage.setItem("puzzle_id", puzzleId)
+      axios.get(`${BASE_URL}/bee/answer/by-puzzle/${puzzleId}/`)
+        .then(response => {
+          setData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching answers:', error);
+        });
+    }
+  }, [puzzle]);
+  
+
     
     useEffect(() => {
-        if(authTokens) {
-            getUserLevel()
+        if (authTokens) {
+            const fetchData = async () => {
+                const puzzleData = await fetchUnplayedPuzzles();
+                console.log("puzzleData", puzzleData);
+                setPuzzle(puzzleData);
+                getUserLevel();
+            };
+    
+            fetchData();
         }
-    }, [])
+    }, [authTokens])
 
 
     useEffect(() => {
@@ -161,13 +303,25 @@ export const AuthProvider = ({ children }) => {
         successMessage: successMessage,
         gameLevel: gameLevel,
         guestView: guestView,
+        increaseLimit: increaseLimit,
+        fetchNewGame: fetchNewGame,
+        puzzle: puzzle,
+        data: data,
+        temproryPuzzleData: temproryPuzzleData,
+        setTemporaryPuzzleData: setTemporaryPuzzleData,
+        setData: setData,
+        setPuzzle: setPuzzle,
+        setFetchNewGame: setFetchNewGame,
+        setIncreaseLimit: setIncreaseLimit,
         setSuccessMessage: setSuccessMessage,
         login: login,
         logout: logout,
         updateLevel: updateLevel,
         setGameLevel: setGameLevel,
         setGuestView: setGuestView,
-        startGame: startGame,
+        completeGame: completeGame,
+        skipGame: skipGame,
+        fetchUnplayedPuzzles: fetchUnplayedPuzzles
     }
 
     useEffect(() => {

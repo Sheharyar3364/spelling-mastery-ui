@@ -43,14 +43,22 @@ import PrivateRoutes from './utils/PrivateRoute.jsx';
 const BASE_URL = import.meta.env.VITE_API_URL
 
 function App() {
-  const [data, setData] = useState([]);
-  const [puzzle, setPuzzle] = useState()
   const [showMessage, setShowMessage] = useState(false);
   const [guess, dispatchGuess] = useReducer(scoreReducer, { score: 0 });
   const [gameLevelState, dispatchGameLevelState] = useReducer(GameLevelReducer, {
     currentLevel: localStorage.getItem("currentLevel") != null ? JSON.parse(localStorage.getItem("currentLevel")) : 1
   })
-  const {user, gameLevel, setGameLevel, guestView, setGuestView} = useContext(AuthContext)
+  const {user, 
+    gameLevel, 
+    setGameLevel, 
+    guestView, 
+    setGuestView, 
+    puzzle, 
+    setPuzzle, 
+    completeGame,
+    data,
+    setData
+  } = useContext(AuthContext)
   const [loading, setLoading] = useState(false) 
 
   const [showConfetti, setShowConfetti] = useState(false)
@@ -72,91 +80,6 @@ function App() {
     localStorage.setItem("currentLevel", JSON.stringify(gameLevelState.currentLevel))
   }, [gameLevelState])
   
-
-
-  // fetching answers for the puzzle to validate against
-  useEffect(() => {
-    // Check if puzzles are fetched and puzzle array is not empty
-    if (puzzle) {
-      const puzzleId = puzzle.id
-      localStorage.setItem("puzzle_id", puzzleId)
-      axios.get(`${BASE_URL}/bee/answer/by-puzzle/${puzzleId}/`)
-        .then(response => {
-          setData(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching answers:', error);
-        });
-    }
-  }, [puzzle]);
-
-  
-
-  const fetchUnplayedPuzzles = async () => {
-    const token = JSON.parse(localStorage.getItem('authTokens')); 
-    try {
-      const response = await fetch(`${BASE_URL}/bee/unplayed_puzzle/`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token?.access}`,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if(!response.ok) {
-        console.log("User not authenticated")
-        return
-      }
-  
-      const data = await response.json();
-      // console.log("data", data)
-      setPuzzle(data)
-    } catch (error) {
-      console.error('Error fetching unplayed puzzles:', error);
-    }
-  };
-
-
-
-const completeGame = async (userGameId) => {
-  const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));  
-
-    let response = await fetch(`${BASE_URL}/bee/complete_puzzle/`, {
-    method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authTokensInLocalStorage?.access}`
-      },
-      body: JSON.stringify({"gameid": userGameId})
-  });
-
-  if(response.status === 200) {  // Status code changed to 201
-    let data = await response.json();
-    localStorage.removeItem("userGameId")
-    await fetchUnplayedPuzzles()
-  } else {
-      console.error("Failed to start the game:", response.status);
-      return null;
-  }
-}
-  
-
-
-  // fetching puzzle
-  useEffect(() => {
-    if(user) {
-      fetchUnplayedPuzzles()
-    }
-  }, [user]);
-
-
-
-
-  useEffect(() => {
-    const userGameId = JSON.parse(localStorage.getItem("userGameId"))
-    completeGame(userGameId)
-  }, [gameLevel])
-
 
 
   if (guestView) {
@@ -219,7 +142,7 @@ const completeGame = async (userGameId) => {
                                   <main className="app-container">
                                     <section className="container">
                                       <Messages />
-                                      <MemoizedCircularProgress setShowConfetti={setShowConfetti} showConfetti={showConfetti} setLoading={setLoading} />
+                                      <MemoizedCircularProgress setShowConfetti={setShowConfetti} completeGame={completeGame} />
                                       <MemoizedCorrectGuesses />
                                       <WordContextProvider>
                                         <section className="words">
@@ -227,7 +150,7 @@ const completeGame = async (userGameId) => {
                                         </section>
                                         <section className="inputs">
                                           <section className="center">
-                                            <Honeycomb />
+                                            <Honeycomb showConfetti={showConfetti} setShowConfetti={setShowConfetti} setLoading={setLoading} />
                                           </section>
                                         </section>
                                       </WordContextProvider>

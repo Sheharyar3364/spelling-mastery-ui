@@ -265,12 +265,16 @@ body {
 }
 
 .buttons {
+  /* border: 1px solid red; */
+  width: 450px;
   text-align: center;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: nowrap;
+  margin-left: -70px;
+
 }
 
 .button {
@@ -295,6 +299,35 @@ body {
   margin-block-start: 1rem;
 }
 
+
+
+.next-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3em;
+  font-size: 1em;
+  border: 1px solid #dcdcdc;
+  border-radius: 2.5em;
+  letter-spacing: 0.01em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  margin-block-start: 1rem;
+  max-width: 400px;
+  margin-left: -20px;
+  background-color: #f7da21;
+  color: black;
+  margin-top: 35px;
+}
+
+.next-btn:hover {
+  color: white;
+}
+
+
+
 .buttons .shuffle {
   min-width: 3rem !important;
 }
@@ -311,6 +344,11 @@ body {
 
 .central-letter {
   color: #ffcf24;
+}
+
+.confirmation {
+  position: absolute;
+  border: 3px solid #ffcf24;
 }
 
 @keyframes blink-caret {

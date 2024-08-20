@@ -8,10 +8,12 @@ import {
     MessagesContext, 
     PuzzleContext,
 } from '../contexts/Contexts';
+import AuthContext from '../contexts/AuthContext';
+
 // import { useContext } from 'react';
 import { handleWordValidation } from '../utils/handleWordValidation';
 
-export function Honeycomb() {
+export function Honeycomb( {showConfetti, setShowConfetti, setLoading } ) {
     const [word, dispatchWord] = useContext(WordContext);
     const data = useContext(DataContext);
     const [guess, dispatchGuess] = useContext(GuessContext);
@@ -21,6 +23,18 @@ export function Honeycomb() {
     const [isOpen, setIsOpen] = useState(false)
     const [hintItems, setHintItems] = useState([])
     const [hintCount, setHintCount] = useState(2)
+    const {
+        updateLevel, 
+        setIncreaseLimit, 
+        fetchNewGame, 
+        setFetchNewGame, 
+        temproryPuzzleData,
+        setTemporaryPuzzleData,
+        setPuzzle,
+        fetchUnplayedPuzzles
+    } = useContext(AuthContext)
+
+
     
     const [randomArr, setRandomArr] = useState([0, 1, 2, 3, 4, 5]);
 
@@ -44,12 +58,14 @@ export function Honeycomb() {
         setIsOpen(true)
     }
 
+
     const increaseHintLevel = (e) => {
         e.stopPropagation()
         if(hintCount <= 3) {
             setHintCount(prevHintCount => prevHintCount + 1)
         }
     }
+
 
     const enter = () => {
         const answers = data[0]?.words
@@ -63,6 +79,29 @@ export function Honeycomb() {
             dispatchGuess
         )
     };
+
+
+    const handleNextGame = (e) => {
+        e.preventDefault()
+        const fetchData = async () => {
+            const puzzleData = await fetchUnplayedPuzzles();
+            setPuzzle(puzzleData);
+        };
+        fetchData();
+        localStorage.removeItem("foundWords")
+        foundWords.length = 0;
+        setLoading(true)
+        // setPuzzle(temproryPuzzleData)
+        setTemporaryPuzzleData("")
+        setFetchNewGame(false)
+        updateLevel(1);
+        setIncreaseLimit(0);        
+        setTimeout(() => {
+        // Another timeout to reset loading state after an operation
+            setLoading(false);
+        }, 3000); // Delay between confetti ending and loading state
+    
+    }
 
 
 
@@ -93,18 +132,27 @@ export function Honeycomb() {
                 
             </article>
             <section className="buttons">
-                <button className="button" onClick={deleteLetter}>
-                    Delete
-                </button>
-                <button className="button shuffle" onClick={shuffle}>
-                     <svg className="shuffle-icon" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M6.19306266,7 L10,7 L10,9 L3,9 L3,2 L5,2 L5,5.27034886 C6.72510698,3.18251178 9.19576641,2 12,2 C17.5228475,2 22,6.4771525 22,12 C20,12 22,12 20,12 C20,7.581722 16.418278,4 12,4 C9.60637619,4 7.55353989,5.07869636 6.19306266,7 Z M17.8069373,17 L14,17 L14,15 L21,15 L21,22 L19,22 L19,18.7296511 C17.274893,20.8174882 14.8042336,22 12,22 C6.4771525,22 2,17.5228475 2,12 C2,12 4,12 4,12 C4,16.418278 7.581722,20 12,20 C14.3936238,20 16.4464601,18.9213036 17.8069373,17 Z" fillRule="evenodd"/></svg>
-                </button>
-                <button className="button" onClick={enter}>
-                    Enter
-                </button>
-                <button className="button" onClick={hints}>
-                    Hints
-                </button>
+            {!fetchNewGame ? 
+                <>
+                    <button className="button" onClick={deleteLetter}>
+                        Delete
+                    </button>
+                    <button className="button shuffle" onClick={shuffle}>
+                        <svg className="shuffle-icon" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M6.19306266,7 L10,7 L10,9 L3,9 L3,2 L5,2 L5,5.27034886 C6.72510698,3.18251178 9.19576641,2 12,2 C17.5228475,2 22,6.4771525 22,12 C20,12 22,12 20,12 C20,7.581722 16.418278,4 12,4 C9.60637619,4 7.55353989,5.07869636 6.19306266,7 Z M17.8069373,17 L14,17 L14,15 L21,15 L21,22 L19,22 L19,18.7296511 C17.274893,20.8174882 14.8042336,22 12,22 C6.4771525,22 2,17.5228475 2,12 C2,12 4,12 4,12 C4,16.418278 7.581722,20 12,20 C14.3936238,20 16.4464601,18.9213036 17.8069373,17 Z" fillRule="evenodd"/></svg>
+                    </button>
+                    <button className="button" onClick={enter}>
+                        Enter
+                    </button>
+                
+                    <button className="button" onClick={hints}>
+                        Hints
+                    </button>
+                </>
+                    :
+                    <button onClick={handleNextGame} className="next-btn text-white inline-flex w-full justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Next Game
+                    </button>
+                }
                 
             </section>
         </>

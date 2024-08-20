@@ -3,11 +3,19 @@ import { CircularProgress } from "./CircularProgress";
 import { FoundWordsContext } from "../contexts/Contexts";
 import AuthContext from "../contexts/AuthContext";
 
-export const MemoizedCircularProgress = ({ setShowConfetti, showConfetti, setLoading }) => {
+export const MemoizedCircularProgress = ({ setShowConfetti, completeGame }) => {
     const foundWordsState = useContext(FoundWordsContext)
     const foundWords = foundWordsState[0]
-    const {updateLevel, gameLevel, setGameLevel} = useContext(AuthContext)
+    const {gameLevel, setGameLevel,  increaseLimit, setIncreaseLimit, setFetchNewGame} = useContext(AuthContext)
     return (
-         <CircularProgress setLoading={setLoading} showConfetti={showConfetti} setShowConfetti={setShowConfetti} updateLevel={updateLevel} gameLevel={gameLevel} setGameLevel={setGameLevel} />
+         <CircularProgress 
+            setShowConfetti={setShowConfetti} 
+            gameLevel={gameLevel} 
+            setGameLevel={setGameLevel} 
+            increaseLimit={increaseLimit} 
+            setIncreaseLimit={setIncreaseLimit} 
+            setFetchNewGame={setFetchNewGame}
+            completeGame={completeGame}
+         />
     )
 }

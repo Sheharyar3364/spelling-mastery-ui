@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef, useMemo } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { 
   DataContext, 
   PuzzleContext, 
@@ -8,7 +8,15 @@ import {
 } from "../contexts/Contexts";
 
 
-export function CircularProgress( {setLoading, showConfetti, setShowConfetti, updateLevel, gameLevel, setGameLevel }) {
+export function CircularProgress( { 
+  setShowConfetti, 
+  gameLevel, 
+  setGameLevel, 
+  increaseLimit, 
+  setIncreaseLimit,
+  setFetchNewGame,
+  completeGame }
+) {
   const [guess, dispatchGuess] = useContext(GuessContext);
   const data = useContext(DataContext)
   const puzzle = useContext(PuzzleContext)
@@ -16,12 +24,6 @@ export function CircularProgress( {setLoading, showConfetti, setShowConfetti, up
   const [foundWords, setFoundWords] = useContext(FoundWordsContext)
 
     
-  // Initialize increaseLimit from localStorage or default to 0
-  const [increaseLimit, setIncreaseLimit] = useState(() => {
-    const savedIncreaseLimit = localStorage.getItem("increaseLimit");
-    return savedIncreaseLimit ? JSON.parse(savedIncreaseLimit) : 0;
-  })
-
 
   // set increaseLimit to local Storage as soon as as foundWords changes
   useEffect(() => { 
@@ -31,30 +33,17 @@ export function CircularProgress( {setLoading, showConfetti, setShowConfetti, up
   const prevGameLevelState = useRef(gameLevel)
 
   // *********************************** BUSINESS LOGIC START *********************************************
+
 // increasing level as soon as the threshold is met
 useEffect(() => {
   if (increaseLimit == 100) {
+    const userGameId = JSON.parse(localStorage.getItem("userGameId"))
+    completeGame(userGameId)
+    setFetchNewGame(true)
     setShowConfetti(true);
-    foundWords.length = 0;
-
     setTimeout(() => {
-      updateLevel(1);
-      setIncreaseLimit(0);
       setShowConfetti(false);
-      
-      setTimeout(() => {
-        if(!showConfetti) {
-          setLoading(true);
-        }
-        
-        // Another timeout to reset loading state after an operation
-        setTimeout(() => {
-          setLoading(false);
-        }, 4000);
-
-      }, 0); // Delay between confetti ending and loading state
-
-    }, 3000); // Delay between threshold met and level update
+    }, 4000); // Delay between threshold met and level update
 
   }
 }, [foundWords, setGameLevel, increaseLimit]);
@@ -76,24 +65,6 @@ useEffect(() => {
   const totalAnswers = () => {
     return data[0]?.words
   }
-
-  // To thoughtfully decide the win level for playing user
-  // every answer is an object
-
-  // const fourLetterAnswers = totalAnswers().filter(answer => answer.word.length == 4)
-  
-  // const AnswersThatAreMorethanFourLetter = totalAnswers().filter(answer => answer.word.length > 4)
-  
-  // total score based on number of answers for a puzzle to decide win level
-  // let estimatedTotalScore = 0;
-  
-  // fourLetterAnswers.map(answer => {
-  //   estimatedTotalScore += 1
-  // })
-
-  // AnswersThatAreMorethanFourLetter.map(answer => {
-  //   estimatedTotalScore += answer.word.length
-  // })
 
   // ************************* LOGIC FOR FINDING TOTAL SCORE, COULD BE OF USE LATER START ********************
 
@@ -132,8 +103,9 @@ useEffect(() => {
 
   
   return (
+    <>
     <section className="circular-progress-container">
-      <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-1xl "><span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 underline underline-offset-3 decoration-8 decoration-yellow-400">Level</span> <span className="underline underline-offset-3 decoration-8 decoration-yellow-400">{gameLevel}</span></h1>
+      <h1 className="mb-4 text-3xl font-extrabold text-gray-900 md:text-5xl lg:text-1xl "><span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 underline underline-offset-3 decoration-8 decoration-yellow-400">Level</span> <span className="underline underline-offset-3 decoration-8 decoration-yellow-400">{ localStorage.getItem("gameLevel") ? localStorage.getItem("gameLevel") : gameLevel}</span></h1>
       <section className="circle">
         <div className="relative size-40">
           {/* Circular Progress */}
@@ -153,5 +125,6 @@ useEffect(() => {
         </div>
       </section>
     </section>
+    </>
   );
 }
