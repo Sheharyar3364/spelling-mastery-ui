@@ -17,7 +17,7 @@ export function Home( {setGuestView, foundWords} ) {
         setPlay(true)
         setTimeout(() => {
             setGuestView(false)
-        }, 3000)
+        }, 2000)
     }
 
 
@@ -34,7 +34,7 @@ export function Home( {setGuestView, foundWords} ) {
         setPlay(true)
         setTimeout(() => {
             setGuestView(false)
-        }, 1000)
+        }, 1200)
     }
 
 
