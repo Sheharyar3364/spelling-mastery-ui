@@ -70,8 +70,7 @@ useEffect(() => {
 
 
   // to determine determistic expected words from user in order to win and level up
-  // const totalWords = totalAnswers().length
-  const totalWords = 5
+  const totalWords = totalAnswers().length
 
 
   //  user has to find Half of the words in order to win and level up to next level
@@ -80,8 +79,17 @@ useEffect(() => {
     levelUpThreshold = 1
   } else if (totalWords == 2) {
     levelUpThreshold = 2;
-  } else if(totalWords > 2) {
-    levelUpThreshold = Math.ceil(totalWords / 2)
+  } else if(totalWords == 3) {
+    levelUpThreshold = 3
+  } else if(totalWords == 4) {
+    levelUpThreshold = 4
+  } else if(totalWords == 5) {
+    levelUpThreshold = 5
+  } else if(totalWords > 5) {
+    levelUpThreshold = Math.ceil(((5 / 100) * totalWords) + gameLevel)
+    // console.log("game level", gameLevel)
+    // console.log("total words", totalWords)
+    // console.log("level up Threshold", levelUpThreshold)
   }
 
 

@@ -61,8 +61,6 @@ export function Home( {setGuestView, foundWords} ) {
         startNewGame()
     }
 
-    console.log("gameLevel at home", gameLevel)
-
 
     return (
         <section className="bg-white home-container">

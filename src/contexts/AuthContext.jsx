@@ -121,7 +121,6 @@ export const AuthProvider = ({ children }) => {
         })
 
         const data = await response.json()
-        console.log("data", data)
         if(response.status == 201) {
             setGameLevel(data.level)
             localStorage.setItem("gameLevel", JSON.stringify(data.level))
@@ -234,8 +233,6 @@ export const AuthProvider = ({ children }) => {
 
 
     const skipGame = async (userGameId) => {
-        console.log("running skip")
-        console.log(typeof(userGameId))
         setTemporaryPuzzleData(puzzle)
         const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));  
         let response = await fetch(`${BASE_URL}/bee/skip_puzzle/`, {
@@ -259,7 +256,6 @@ export const AuthProvider = ({ children }) => {
 
   // fetching answers for the puzzle to validate against
   useEffect(() => {
-    console.log("puzzle", puzzle)
     if (puzzle) {
       const puzzleId = puzzle.id
       localStorage.setItem("puzzle_id", puzzleId)
@@ -279,7 +275,6 @@ export const AuthProvider = ({ children }) => {
         if (authTokens) {
             const fetchData = async () => {
                 const puzzleData = await fetchUnplayedPuzzles();
-                console.log("puzzleData", puzzleData);
                 setPuzzle(puzzleData);
                 getUserLevel();
             };
