@@ -5,27 +5,10 @@ import { Nav } from '../components/Nav'
 import { Link } from 'react-router-dom'
 
 export default function LoginPage() {
-  const { login, successMessage } = useContext(AuthContext)
+  const { login } = useContext(AuthContext)
   return (
     <>
-    <Nav />
-     {/*
-          This example requires updating your template:
-  
-          ```
-          <html class="h-full bg-white">
-          <body class="h-full">
-          ``` 
-        */}
-        { successMessage && 
-            <div class="flex justify-around items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400">   
-              <div class="">
-                <span class="font-medium">Your Account</span> has been created successfully!
-              </div>
-          </div>
-        }
-
-
+      <Nav />
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img

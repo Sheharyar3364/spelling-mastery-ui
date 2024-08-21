@@ -65,6 +65,9 @@ export const AuthProvider = ({ children }) => {
         setUser(null)
         localStorage.removeItem("authTokens")
         localStorage.removeItem("gameLevel")
+        localStorage.removeItem("puzzle_id")
+        localStorage.removeItem("userGameId")
+        localStorage.removeItem("currentLevel")
         navigate("/login")
     }
 
@@ -126,34 +129,6 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("gameLevel", JSON.stringify(data.level))
         }
     }
-
-
-    const startGame = async () => {
-        const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));
-        const puzzle_id = JSON.parse(localStorage.getItem("puzzle_id")) != null ? JSON.parse(localStorage.getItem("puzzle_id")) : "";
-        
-        if(puzzle_id) {
-            let response = await fetch(`${BASE_URL}/bee/start_game/`, {  // Note the trailing slash
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authTokensInLocalStorage?.access}`
-                },
-                body: JSON.stringify({"puzzle_id": puzzle_id})
-            });
-        
-            if(response.status === 201) {  // Status code changed to 201
-                localStorage.removeItem("puzzle_id")
-                let data = await response.json();
-                localStorage.setItem("userGameId", data.user_game_id)
-                return data.user_game_id;
-            } else {
-                console.error("Failed to start the game:", response.status);
-                return null;
-            }
-        }
-    }
-
 
 
   const fetchUnplayedPuzzles = async () => {
@@ -303,6 +278,8 @@ export const AuthProvider = ({ children }) => {
         puzzle: puzzle,
         data: data,
         temproryPuzzleData: temproryPuzzleData,
+        setUser: setUser,
+        setAuthTokens: setAuthTokens,
         setTemporaryPuzzleData: setTemporaryPuzzleData,
         setData: setData,
         setPuzzle: setPuzzle,

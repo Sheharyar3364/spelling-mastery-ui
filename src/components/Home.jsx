@@ -4,7 +4,7 @@ import { Link, json } from "react-router-dom";
 
 
 export function Home( {setGuestView, foundWords} ) {
-    const {user, gameLevel, setIncreaseLimit, skipGame} = useContext(AuthContext)
+    const {user, gameLevel, setIncreaseLimit, skipGame, successMessage} = useContext(AuthContext)
 
     const [play, setPlay] = useState(false)
     const [showConfirmation, setShowConfirmation] = useState(false)
@@ -63,6 +63,14 @@ export function Home( {setGuestView, foundWords} ) {
 
 
     return (
+        <>
+        { successMessage && 
+            <div class="flex justify-around items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50">   
+              <div class="">
+                <span class="font-medium">Your Account</span> has been created successfully!
+              </div>
+          </div>
+        }
         <section className="bg-white home-container">
             {showConfirmation && 
                 <section className="confirmation">
@@ -112,5 +120,6 @@ export function Home( {setGuestView, foundWords} ) {
                 </div>
             </div>
         </section>
+        </>
     );
 }

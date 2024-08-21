@@ -4,6 +4,8 @@ import spellingLogo from '../assets/images/logo/spellingLogo.png'
 import AuthContext from "../contexts/AuthContext";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
+import { jwtDecode } from "jwt-decode";
+
 
 const BASE_URL = import.meta.env.VITE_API_URL
 
@@ -11,7 +13,7 @@ const BASE_URL = import.meta.env.VITE_API_URL
 const RegistrationPage = () => {
     let [emailError, setEmailError] = useState(null)
     let [passwordError, setPasswordError] = useState(null)
-    const {setSuccessMessage} = useContext(AuthContext)
+    const {setSuccessMessage, setUser, setAuthTokens, setGuestView} = useContext(AuthContext)
     let navigate = useNavigate()
 
     let registration = async (event) => {
@@ -32,14 +34,22 @@ const RegistrationPage = () => {
         })
 
         let data = await response.json()
-        console.log(data)
+        console.log("registeration data", data)
 
         if(response.status === 201) {
-            navigate("/login")
+            if(data.token) {
+                console.log("token", data.token)
+                setUser(jwtDecode(data.token.access))
+                localStorage.setItem("authTokens", JSON.stringify(data.token))
+                setAuthTokens(data.token)
+                setGuestView(true)
+                navigate("/")
+            }
+            
             setSuccessMessage(true)
             setTimeout(() => {
                 setSuccessMessage(false)
-            }, 5000)
+            }, 3000)
         } else if (data?.email) {
             setEmailError(data.email[0])
             setPasswordError(null)
