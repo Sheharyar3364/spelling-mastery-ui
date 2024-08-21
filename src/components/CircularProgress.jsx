@@ -49,8 +49,6 @@ useEffect(() => {
 }, [foundWords, setGameLevel, increaseLimit]);
 
 
-  
-
   useEffect(() => {
     // Check if the game level has changed from the initial state (1)
     if (gameLevel !== 1 && gameLevel !== prevGameLevelState.current) {
@@ -89,10 +87,10 @@ useEffect(() => {
     levelUpThreshold = Math.ceil(((5 / 100) * totalWords) + gameLevel)
     // console.log("game level", gameLevel)
     // console.log("total words", totalWords)
-    // console.log("level up Threshold", levelUpThreshold)
+    console.log("level up Threshold", levelUpThreshold)
   }
 
-
+  
   const increaseChunk = Math.ceil( 100 / levelUpThreshold )
 
   // progressing percentage in the Circular Progress when score increases

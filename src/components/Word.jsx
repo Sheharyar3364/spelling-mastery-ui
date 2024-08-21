@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   DataContext,
   GuessContext,
@@ -10,6 +10,7 @@ import {
 } from '../contexts/Contexts';
 
 import { handleWordValidation } from '../utils/handleWordValidation';
+import AuthContext from '../contexts/AuthContext';
 
 export function Word() {
   const [word, dispatchWord] = useContext(WordContext);
@@ -18,6 +19,21 @@ export function Word() {
   const [guess, dispatchGuess] = useContext(GuessContext);
   const [foundWords, setFoundWords] = useContext(FoundWordsContext);
   const [showMessage, setShowMessage] = useContext(MessagesContext);
+  const {postFoundWords} = useContext(AuthContext)
+
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    if(inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [])
+
+  useEffect(() => {
+    if(inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [puzzle])
 
   // making sure it run only once and iff when showMessage changes
   useEffect(() => {
@@ -32,10 +48,11 @@ export function Word() {
 
   }, [showMessage])
 
+
   const handleEnter = (event) => {
     const answers = data[0].words
     if (event.key === "Enter") {
-      handleWordValidation(
+      const isValid = handleWordValidation(
         word,
         setShowMessage,
         answers,
@@ -44,6 +61,14 @@ export function Word() {
         setFoundWords,
         dispatchGuess
       )
+
+      console.log("isVALID", isValid)
+
+      if(isValid) {
+        const userGameId = JSON.parse(localStorage.getItem("userGameId"))
+        console.log("useGameId + word", userGameId, word)
+        postFoundWords(userGameId, word.content.toLowerCase())
+      } 
     }
   };
 
@@ -51,7 +76,7 @@ export function Word() {
   return (
     <>
       <input
-        autoFocus
+        ref={inputRef}
         value={word.content.toUpperCase()}
         onChange={event =>
           dispatchWord({

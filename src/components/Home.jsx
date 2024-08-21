@@ -4,15 +4,17 @@ import { Link, json } from "react-router-dom";
 
 
 export function Home( {setGuestView, foundWords} ) {
-    const {user, gameLevel, setIncreaseLimit, skipGame, successMessage} = useContext(AuthContext)
+    const {user, gameLevel, setIncreaseLimit, skipGame, successMessage, fetchFoundWords} = useContext(AuthContext)
 
     const [play, setPlay] = useState(false)
     const [showConfirmation, setShowConfirmation] = useState(false)
 
     const startNewGame = () => {
+        if(JSON.parse(localStorage.getItem("foundWords")) || foundWords.length > 1) {
+            localStorage.removeItem("foundWords")
+            foundWords.splice(0, foundWords.length)
+        }
         localStorage.removeItem("increaseLimit")
-        localStorage.removeItem("foundWords")
-        foundWords.splice(0, foundWords.length)
         setIncreaseLimit(0)
         setPlay(true)
         setTimeout(() => {
@@ -31,6 +33,8 @@ export function Home( {setGuestView, foundWords} ) {
 
 
     const continuePlay = () => {
+        const userGameId = JSON.parse(localStorage.getItem("userGameId"))
+        fetchFoundWords(userGameId)
         setPlay(true)
         setTimeout(() => {
             setGuestView(false)
@@ -107,7 +111,7 @@ export function Home( {setGuestView, foundWords} ) {
                     Play now and challenge yourself daily with our engaging Spelling Bee game, designed to boost your word skills and prepare you for any competition!                
                 </p>    
                 <div className="mt-10 flex items-center justify-center gap-x-6">
-                {user && localStorage.getItem("increaseLimit") > 0 ?  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-bold text-white rounded-lg group bg-gray-900 hover:bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 focus:ring-4 focus:outline-none focus:ring-red-100">
+                {user && foundWords.length ?  <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-bold text-white rounded-lg group bg-gray-900 hover:bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 focus:ring-4 focus:outline-none focus:ring-red-100">
                         <span onClick={continuePlay} className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-gray-900 rounded-md group-hover:bg-opacity-0">
                             Continue Playing
                         </span>

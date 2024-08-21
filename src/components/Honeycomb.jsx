@@ -31,7 +31,8 @@ export function Honeycomb( {showConfetti, setShowConfetti, setLoading } ) {
         temproryPuzzleData,
         setTemporaryPuzzleData,
         setPuzzle,
-        fetchUnplayedPuzzles
+        fetchUnplayedPuzzles,
+        postFoundWords,
     } = useContext(AuthContext)
 
 
@@ -69,7 +70,7 @@ export function Honeycomb( {showConfetti, setShowConfetti, setLoading } ) {
 
     const enter = () => {
         const answers = data[0]?.words
-        handleWordValidation(
+        const isValid = handleWordValidation(
             word,
             setShowMessage,
             answers,
@@ -78,6 +79,14 @@ export function Honeycomb( {showConfetti, setShowConfetti, setLoading } ) {
             setFoundWords,
             dispatchGuess
         )
+
+        console.log("isVALID", isValid)
+
+        if(isValid) {
+            const userGameId = JSON.parse(localStorage.getItem("userGameId"))
+            console.log("useGameId + word", userGameId, word)
+            postFoundWords(userGameId, word.content.toLowerCase())
+        }
     };
 
 
@@ -149,7 +158,7 @@ export function Honeycomb( {showConfetti, setShowConfetti, setLoading } ) {
                     </button>
                 </>
                     :
-                    <button onClick={handleNextGame} className="next-btn text-white inline-flex w-full justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button onClick={handleNextGame} className="next-btn text-white inline-flex w-full justify-center hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Next Game
                     </button>
                 }

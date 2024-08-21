@@ -28,6 +28,7 @@ export const handleWordValidation = (
           score: lowerCaseWord.length === 4 ? 1 : lowerCaseWord.length,
         });
         setShowMessage("showScore");
+        return true
       } else if (foundWords.includes(validWord)) {
         setShowMessage(true)
       }

@@ -57,17 +57,14 @@ function App() {
     setPuzzle, 
     completeGame,
     data,
-    setData
+    setData,
+    foundWords,
+    setFoundWords,
+    fetchFoundWords,
   } = useContext(AuthContext)
   const [loading, setLoading] = useState(false) 
 
   const [showConfetti, setShowConfetti] = useState(false)
-
-  // Initialize foundWords from localStorage or default to an empty array
-  const [foundWords, setFoundWords] = useState(() => {
-    const savedFoundWords = localStorage.getItem("foundWords");
-    return savedFoundWords ? JSON.parse(savedFoundWords) : [];
-  });
 
   // Save foundWords to localStorage whenever it changes
   useEffect(() => {
@@ -85,18 +82,16 @@ function App() {
   if (guestView) {
     return (
       <>
-       
-            <Routes>
-              <Route element={
-                <>
-                  <Nav />
-                  <Home guestView={guestView} setGuestView={setGuestView} foundWords={foundWords} />
-                </>
-              } path="/" />
-              <Route element={<LoginPage />} path="/login" />
-              <Route element={<RegistrationPage />} path='/registration' />
-
-            </Routes>
+        <Routes>
+          <Route element={
+            <>
+              <Nav />
+              <Home guestView={guestView} setGuestView={setGuestView} foundWords={foundWords} />
+            </>
+          } path="/" />
+          <Route element={<LoginPage />} path="/login" />
+          <Route element={<RegistrationPage />} path='/registration' />
+        </Routes>
       </>
     )
   }
