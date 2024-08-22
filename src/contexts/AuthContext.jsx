@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     const [puzzle, setPuzzle] = useState()
     const [data, setData] = useState([]);
     const [temproryPuzzleData, setTemporaryPuzzleData] = useState("")
+    const [loginError, setLoginError] = useState()
 
     // Initialize foundWords from localStorage or default to an empty array
     const [foundWords, setFoundWords] = useState(() => {
@@ -59,6 +60,9 @@ export const AuthProvider = ({ children }) => {
             setAuthTokens(data)
             setGuestView(true)
             navigate("")
+        } else {
+            // console.log("data", data)
+            setLoginError(data)
         }
 
     }
@@ -389,6 +393,7 @@ export const AuthProvider = ({ children }) => {
         data: data,
         temproryPuzzleData: temproryPuzzleData,
         foundWords: foundWords,
+        loginError: loginError,
         fetchFoundWords: fetchFoundWords,
         postFoundWords: postFoundWords,
         setFoundWords: setFoundWords,

@@ -5,7 +5,7 @@ import { Nav } from '../components/Nav'
 import { Link } from 'react-router-dom'
 
 export default function LoginPage() {
-  const { login } = useContext(AuthContext)
+  const { login, loginError } = useContext(AuthContext)
   return (
     <>
       <Nav />
@@ -60,7 +60,11 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-
+            <div>
+              {loginError &&  
+                <p className="text-red-600 text-sm mt-1">The username or password is incorrect. Please try again.</p>
+              }            
+            </div>
             <div>
               <button
                 type="submit"
