@@ -250,7 +250,7 @@ export const AuthProvider = ({ children }) => {
     
             if (response.ok) {
                 const data = await response.json();
-                console.log("Found Words:", data);
+                // console.log("Found Words:", data);
                 setFoundWords(data)
             } else {
                 console.error("Failed to fetch found words:", response.status, response.statusText);
@@ -279,7 +279,7 @@ export const AuthProvider = ({ children }) => {
         if (response.status === 200) {  // Status code changed to 201
             // const data = await response.json()
             // console.log("found Words", data)
-            console.log("successfully posted word")
+            // console.log("successfully posted word")
             return response
             // setFoundWords(data)
         } else {
@@ -293,12 +293,12 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (puzzle) {
             const foundWordsInLocalStorage = JSON.parse(localStorage.getItem("foundWords")) ? JSON.parse(localStorage.getItem("foundWords")) : ""
-            console.log("foundWords in storage", foundWordsInLocalStorage)
-            console.log(foundWords.length)
+            // console.log("foundWords in storage", foundWordsInLocalStorage)
+            // console.log(foundWords.length)
             if(foundWordsInLocalStorage || foundWords.length == 0) {
-                console.log("are we here")
+                // console.log("are we here")
                 const userGameId = JSON.parse(localStorage.getItem("userGameId"))
-                console.log("userGameId after login", userGameId)
+                // console.log("userGameId after login", userGameId)
                 fetchFoundWords(userGameId)
             }
 
@@ -318,7 +318,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (authTokens) {
             const fetchData = async () => {
-                console.log("fetching puzzles")
+                // console.log("fetching puzzles")
                 const puzzleData = await fetchUnplayedPuzzles();
                 setPuzzle(puzzleData);
                 getUserLevel();
@@ -365,8 +365,8 @@ export const AuthProvider = ({ children }) => {
     
       
         const increaseChunkInAuth = Math.ceil( 100 / levelUpThreshold)
-        console.log("increase Chunk", increaseChunkInAuth)
-        console.log("foundWords length in data", foundWords.length)
+        // console.log("increase Chunk", increaseChunkInAuth)
+        // console.log("foundWords length in data", foundWords.length)
         localStorage.removeItem("increaseLimit")
         setIncreaseLimit(increaseChunkInAuth * foundWords.length)
     }
