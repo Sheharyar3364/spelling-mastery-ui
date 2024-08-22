@@ -75,6 +75,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("userGameId")
         localStorage.removeItem("currentLevel")
         localStorage.removeItem("foundWords")
+        localStorage.removeItem("increaseLimit")
         navigate("/login")
     }
 
@@ -294,12 +295,13 @@ export const AuthProvider = ({ children }) => {
             const foundWordsInLocalStorage = JSON.parse(localStorage.getItem("foundWords")) ? JSON.parse(localStorage.getItem("foundWords")) : ""
             console.log("foundWords in storage", foundWordsInLocalStorage)
             console.log(foundWords.length)
-                if(foundWordsInLocalStorage && foundWords.length == 0) {
-                    console.log("are we here")
-                    const userGameId = JSON.parse(localStorage.getItem("userGameId"))
-                    console.log("userGameId after login", userGameId)
-                    fetchFoundWords(userGameId)
-                }
+            if(foundWordsInLocalStorage || foundWords.length == 0) {
+                console.log("are we here")
+                const userGameId = JSON.parse(localStorage.getItem("userGameId"))
+                console.log("userGameId after login", userGameId)
+                fetchFoundWords(userGameId)
+            }
+
             const puzzleId = puzzle.id
             localStorage.setItem("puzzle_id", puzzleId)
             axios.get(`${BASE_URL}/bee/answer/by-puzzle/${puzzleId}/`)
@@ -316,13 +318,12 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (authTokens) {
             const fetchData = async () => {
+                console.log("fetching puzzles")
                 const puzzleData = await fetchUnplayedPuzzles();
                 setPuzzle(puzzleData);
                 getUserLevel();
             };
-
             fetchData();
-            
         }
     }, [authTokens])
 
@@ -332,6 +333,47 @@ export const AuthProvider = ({ children }) => {
             setGameLevel(user.level)
         }
     }, [user])
+
+
+    const totalAnswers = () => {
+        return data[0]?.words
+    }
+    
+  // to determine determistic expected words from user in order to win and level up
+
+  useEffect(() => {
+    if(data[0]) {
+        const totalWords = totalAnswers().length
+         //  user has to find Half of the words in order to win and level up to next level
+        let levelUpThreshold;
+        if(totalWords == 1) {
+            levelUpThreshold = 1
+        } else if (totalWords == 2) {
+            levelUpThreshold = 2;
+        } else if(totalWords == 3) {
+            levelUpThreshold = 3
+        } else if(totalWords == 4) {
+            levelUpThreshold = 4
+        } else if(totalWords == 5) {
+            levelUpThreshold = 5
+        } else if(totalWords > 5) {
+            levelUpThreshold = Math.ceil(((5 / 100) * totalWords) + gameLevel)
+            // console.log("game level", gameLevel)
+            // console.log("total words", totalWords)
+            // console.log("level up Threshold", levelUpThreshold)
+        }
+    
+      
+        const increaseChunkInAuth = Math.ceil( 100 / levelUpThreshold)
+        console.log("increase Chunk", increaseChunkInAuth)
+        console.log("foundWords length in data", foundWords.length)
+        localStorage.removeItem("increaseLimit")
+        setIncreaseLimit(increaseChunkInAuth * foundWords.length)
+    }
+  }, [data[0]])
+
+
+ 
 
 
 

@@ -15,6 +15,7 @@ export function Home( {setGuestView, foundWords} ) {
             foundWords.splice(0, foundWords.length)
         }
         localStorage.removeItem("increaseLimit")
+        localStorage.removeItem("currentLevel")
         setIncreaseLimit(0)
         setPlay(true)
         setTimeout(() => {
@@ -36,6 +37,7 @@ export function Home( {setGuestView, foundWords} ) {
         const userGameId = JSON.parse(localStorage.getItem("userGameId"))
         fetchFoundWords(userGameId)
         setPlay(true)
+        localStorage.removeItem("currentLevel")
         setTimeout(() => {
             setGuestView(false)
         }, 1200)

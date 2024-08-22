@@ -87,11 +87,12 @@ useEffect(() => {
     levelUpThreshold = Math.ceil(((5 / 100) * totalWords) + gameLevel)
     // console.log("game level", gameLevel)
     // console.log("total words", totalWords)
-    console.log("level up Threshold", levelUpThreshold)
+    // console.log("level up Threshold", levelUpThreshold)
   }
 
   
-  const increaseChunk = Math.ceil( 100 / levelUpThreshold )
+  const increaseChunk = Math.ceil( 100 / levelUpThreshold)
+  console.log("increase Chunk", increaseChunk)
 
   // progressing percentage in the Circular Progress when score increases
   useEffect(() => {
