@@ -19,9 +19,10 @@ export function Word() {
   const [guess, dispatchGuess] = useContext(GuessContext);
   const [foundWords, setFoundWords] = useContext(FoundWordsContext);
   const [showMessage, setShowMessage] = useContext(MessagesContext);
-  const {postFoundWords} = useContext(AuthContext)
+  const {postFoundWords, isOpen} = useContext(AuthContext)
 
   const inputRef = useRef(null)
+
 
   useEffect(() => {
     if(inputRef.current) {
@@ -29,11 +30,13 @@ export function Word() {
     }
   }, [])
 
+
   useEffect(() => {
     if(inputRef.current) {
       inputRef.current.focus({ preventScroll: true })
     }
-  }, [puzzle])
+  }, [puzzle, isOpen])
+
 
   // making sure it run only once and iff when showMessage changes
   useEffect(() => {
@@ -45,7 +48,6 @@ export function Word() {
         });
       }, 1000);
     }
-
   }, [showMessage])
 
 

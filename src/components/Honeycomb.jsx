@@ -20,7 +20,6 @@ export function Honeycomb( {showConfetti, setShowConfetti, setLoading } ) {
     const [foundWords, setFoundWords] = useContext(FoundWordsContext);
     const [showMessage, setShowMessage] = useContext(MessagesContext);
     const puzzle = useContext(PuzzleContext)
-    const [isOpen, setIsOpen] = useState(false)
     const [hintItems, setHintItems] = useState([])
     const [hintCount, setHintCount] = useState(2)
     const {
@@ -33,6 +32,8 @@ export function Honeycomb( {showConfetti, setShowConfetti, setLoading } ) {
         setPuzzle,
         fetchUnplayedPuzzles,
         postFoundWords,
+        isOpen,
+        setIsOpen,
     } = useContext(AuthContext)
 
 
@@ -116,7 +117,10 @@ export function Honeycomb( {showConfetti, setShowConfetti, setLoading } ) {
 
     return (
         <>
-            {isOpen ? <section className='hintList bg-yellow-50 border-solid border-2 border-yellow-400' onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <section className='hintList bg-yellow-50 border-solid border-2 border-yellow-400' onClick={() => {
+                setIsOpen(!isOpen)
+                setHintCount(2)
+                }}>
                 <ul>
                     {
                        hintItems.map(hint => <li key={hint}>{hint.slice(0, hintCount) + "..."}</li>)

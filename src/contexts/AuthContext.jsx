@@ -24,13 +24,14 @@ export const AuthProvider = ({ children }) => {
     const [data, setData] = useState([]);
     const [temproryPuzzleData, setTemporaryPuzzleData] = useState("")
     const [loginError, setLoginError] = useState()
+    const [isOpen, setIsOpen] = useState(false)
+
 
     // Initialize foundWords from localStorage or default to an empty array
     const [foundWords, setFoundWords] = useState(() => {
         const savedFoundWords = localStorage.getItem("foundWords");
         return savedFoundWords ? JSON.parse(savedFoundWords) : [];
     });
-
 
 
 
@@ -67,6 +68,7 @@ export const AuthProvider = ({ children }) => {
 
     }
 
+
     const logout = () => {
         if (localStorage.getItem(`randomIndex${gameLevel}`)) {
             localStorage.removeItem(`randomIndex${gameLevel}`)
@@ -82,6 +84,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("increaseLimit")
         navigate("/login")
     }
+
 
     let updateToken = async () => {
         // console.log("updating")
@@ -109,6 +112,7 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+
     let updateLevel = async (newLevel) => {
         const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"))
         let response = await fetch(`${BASE_URL}/api/updateLevel/`, {
@@ -127,6 +131,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("gameLevel", JSON.stringify(data.level))
         }
     }
+
 
     const getUserLevel = async () => {
         const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"))
@@ -242,6 +247,7 @@ export const AuthProvider = ({ children }) => {
             return null;
         }
     }
+
 
     const fetchFoundWords = async (userGameId) => {
         const authTokensInLocalStorage = JSON.parse(localStorage.getItem("authTokens"));
@@ -406,6 +412,8 @@ export const AuthProvider = ({ children }) => {
         temproryPuzzleData: temproryPuzzleData,
         foundWords: foundWords,
         loginError: loginError,
+        isOpen: isOpen,
+        setIsOpen: setIsOpen,
         fetchFoundWords: fetchFoundWords,
         postFoundWords: postFoundWords,
         setFoundWords: setFoundWords,
