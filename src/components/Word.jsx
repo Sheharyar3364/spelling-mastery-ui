@@ -25,13 +25,13 @@ export function Word() {
 
   useEffect(() => {
     if(inputRef.current) {
-      inputRef.current.focus()
+      inputRef.current.focus({ preventScroll: true })
     }
   }, [])
 
   useEffect(() => {
     if(inputRef.current) {
-      inputRef.current.focus()
+      inputRef.current.focus({ preventScroll: true })
     }
   }, [puzzle])
 

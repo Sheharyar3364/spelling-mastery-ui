@@ -369,13 +369,22 @@ export const AuthProvider = ({ children }) => {
             // console.log("total words", totalWords)
             // console.log("level up Threshold", levelUpThreshold)
         }
-    
+        
+        if(increaseLimit > 0) {
+            return
+        } else if(increaseLimit == 0) {
+            const increaseChunkInAuth = Math.ceil( 100 / levelUpThreshold)
+            // console.log("increase Chunk", increaseChunkInAuth)
+            // console.log("foundWords length in data", foundWords.length)
+            localStorage.removeItem("increaseLimit")
+            const tempIncreaseLimit = increaseChunkInAuth * foundWords.length
+            if(tempIncreaseLimit >= 100) {
+                setIncreaseLimit(100)
+            } else {
+                setIncreaseLimit(tempIncreaseLimit)
+            }
+        }
       
-        const increaseChunkInAuth = Math.ceil( 100 / levelUpThreshold)
-        // console.log("increase Chunk", increaseChunkInAuth)
-        // console.log("foundWords length in data", foundWords.length)
-        localStorage.removeItem("increaseLimit")
-        setIncreaseLimit(increaseChunkInAuth * foundWords.length)
     }
   }, [data[0]])
 
