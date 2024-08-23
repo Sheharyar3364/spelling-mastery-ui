@@ -112,7 +112,7 @@ function App() {
             <Nav />
             <section className="home-container">
               <h1 className="text-3xl font-bold">
-                Loading. We are fetching new Puzzle for you!
+                Loading. We are fetching new Puzzle for you...
               </h1>
               <div className="lds-facebook"><div></div><div></div><div></div></div>
             </section>
