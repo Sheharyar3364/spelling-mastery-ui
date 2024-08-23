@@ -92,7 +92,7 @@ useEffect(() => {
 
   
   const increaseChunk = Math.ceil( 100 / levelUpThreshold)
-  console.log("increase Chunk", increaseChunk)
+  // console.log("increase Chunk", increaseChunk)
 
   // progressing percentage in the Circular Progress when score increases
   useEffect(() => {

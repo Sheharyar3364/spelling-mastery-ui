@@ -84,6 +84,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     let updateToken = async () => {
+        // console.log("updating")
         let response = await fetch(`${BASE_URL}/api/token/refresh/`, {
             method: 'POST',
             headers: {
@@ -95,10 +96,12 @@ export const AuthProvider = ({ children }) => {
         const data = await response.json()
 
         if (response.status === 200) {
+            // console.log("auth token", data)
             setAuthTokens(data)
             setUser(jwtDecode(data.access))
             localStorage.setItem('authTokens', JSON.stringify(data))
         } else {
+            console.log("logged out")
             logout()
         }
         if (loading) {
@@ -417,13 +420,21 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
 
-        const fiftyFiveMinutes = 1000 * 60 * 55
+        if(loading) {
+            updateToken()
+        }
+
+        const fourMinutes = 1000 * 60 * 4
 
         let interval = setInterval(() => {
+            // console.log("running interval")
+
             if (authTokens) {
+                // console.log("running interval inside")
+
                 updateToken()
             }
-        }, fiftyFiveMinutes)
+        }, fourMinutes)
 
         return () => clearInterval(interval)
 

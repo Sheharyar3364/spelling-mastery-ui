@@ -62,9 +62,9 @@ export function Home( {setGuestView, foundWords} ) {
     }
 
     const handleSkipGame = () => {
+        startNewGame()
         const userGameId = JSON.parse(localStorage.getItem("userGameId"))
         skipGame(userGameId)
-        startNewGame()
     }
 
 

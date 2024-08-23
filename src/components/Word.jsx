@@ -62,11 +62,11 @@ export function Word() {
         dispatchGuess
       )
 
-      console.log("isVALID", isValid)
+      // console.log("isVALID", isValid)
 
       if(isValid) {
         const userGameId = JSON.parse(localStorage.getItem("userGameId"))
-        console.log("useGameId + word", userGameId, word)
+        // console.log("useGameId + word", userGameId, word)
         postFoundWords(userGameId, word.content.toLowerCase())
       } 
     }
